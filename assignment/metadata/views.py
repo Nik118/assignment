@@ -19,9 +19,12 @@ class LocationViewSet(ModelViewSet):
 
 class DepartmentView(APIView):
 
-    def get(self, request, location_id, format=None):
+    def get(self, request, location_id, department_id=None, format=None):
         output = []
         departments = Department.objects.filter(location=location_id)
+        if department_id:
+            departments = departments.filter(id=department_id)
+
         for department in departments:
             output.append({'id': department.id, 'name': department.name})
         return Response(output)
@@ -63,9 +66,12 @@ class DepartmentView(APIView):
 
 class CategoryView(APIView):
 
-    def get(self, request, location_id, department_id, format=None):
+    def get(self, request, location_id, department_id, category_id=None, format=None):
         output = []
         categories = Category.objects.filter(department=department_id, department__location=location_id)
+        if category_id:
+            categories = categories.filter(id=category_id)
+
         for category in categories:
             output.append({'id': category.id, 'name': category.name})
         return Response(output)
@@ -111,11 +117,14 @@ class CategoryView(APIView):
 
 class SubCategoryView(APIView):
 
-    def get(self, request, location_id, department_id, category_id, format=None):
+    def get(self, request, location_id, department_id, category_id, subcategory_id=None, format=None):
         output = []
         sub_categories = SubCategory.objects.filter(category=category_id, category__department=department_id,
                                                     category__department__location=location_id
                                                     )
+        if subcategory_id:
+            sub_categories = sub_categories.filter(id=subcategory_id)
+
         for sub_category in sub_categories:
             output.append({'id': sub_category.id, 'name': sub_category.name})
         return Response(output)
